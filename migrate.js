@@ -1,3 +1,6 @@
+var path = require('path');
+
 require('./run.js')({
-    test: 'test'
+    basedir: __dirname,
+    migrationsDir: path.resolve(__dirname, 'migrations')
 });

@@ -4,9 +4,9 @@ module.exports = function(cfg) {
 
     switch (args[0]) {
         case 'create':
-            console.log('mya');
+            require('./create_migration.js')(cfg, args[1]);
             break;
         default:
-            console.log('mur');
+            console.log('exit');
     }
 };
