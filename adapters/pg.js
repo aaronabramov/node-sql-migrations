@@ -41,7 +41,20 @@ module.exports = {
             );
         }.bind(this));
     },
-    rollbackMigration: function(id, cb) {},
+    rollbackMigration: function(migration, cb) {
+        var sql = utils.getSql(migration);
+        this.exec(sql, function(result) {
+            console.log('Reverting ' + migration);
+            console.log(result)
+            console.log('===============================================');
+            var values = [migration.match(/^(\d)+/)[0]];
+            this.exec(
+                'delete from __migrations__ where id = $1',
+                values,
+                cb
+            );
+        }.bind(this));
+    },
     ensureMigrationTableExists: function(cb) {
         this.exec(ENSURE_SQL, cb)
     }

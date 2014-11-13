@@ -1,15 +1,23 @@
-var cfg = require('../config.js');
+var cfg = require('../config.js'),
+    adapter = require('../adapters/pg.js'),
+    utils = require('../utils.js');
 
 module.exports = function() {
-    var adapter = require('../adapters/pg.js'),
-        utils = require('../utils.js');
 
     cfg.conn = utils.makeConnString();
 
     adapter.appliedMigrations(function(ids) {
         var migrationsList = utils.getMigrationsList(),
             pending = utils.getPending(migrationsList, ids);
-        console.log(pending);
+        if (pending.length) {
+            console.log('Pending migrations:');
+            pending.forEach(function(m) {
+                console.log('\033[32m>>\033[0m', m);
+            });
+        } else {
+            console.log('No pending migrations');
+            process.exit();
+        }
 
         function apply() {
             // base case
