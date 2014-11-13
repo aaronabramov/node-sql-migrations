@@ -1,8 +1,9 @@
 var fs = require('fs'),
     mkdirp = require('mkdirp'),
-    path = require('path');
+    path = require('path'),
+    cfg = require('../config.js');
 
-module.exports = function(cfg, migrationName) {
+module.exports = function(migrationName) {
     var up, down,
         ts = Date.now();
 

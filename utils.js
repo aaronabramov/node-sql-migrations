@@ -1,7 +1,12 @@
-var fs = require('fs');
+var fs = require('fs'),
+    cfg = require('./config.js');
 
 module.exports = {
-    makeConnString: function(user, password, host, db) {
+    makeConnString: function() {
+        var user = cfg.user,
+            password = cfg.password,
+            host = cfg.host,
+            db = cfg.db;
         // TODO: database dependent
         var result = 'postgress://' + user;
         if (password) {
@@ -14,7 +19,7 @@ module.exports = {
         console.error('ERROR:', err);
         process.exit(1);
     },
-    getMigrationsList: function(cfg) {
+    getMigrationsList: function() {
         return fs.readdirSync(cfg.migrationsDir);
     },
     /**
