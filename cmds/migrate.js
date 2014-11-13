@@ -9,7 +9,8 @@ module.exports = function(cfg) {
         );
 
     adapter.appliedMigrations(conn, function(ids) {
-        console.log('ids', ids);
+        var migrationsList = utils.getMigrationsList(cfg),
+            pending = utils.getPending(migrationsList, ids);
         process.exit();
     });
 };

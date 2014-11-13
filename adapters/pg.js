@@ -1,6 +1,6 @@
 var pg = require('pg'),
     utils = require('../utils.js'),
-    ENSURE_SQL = 'create table if not exists "__migrations__" (id integer NOT NULL)';
+    ENSURE_SQL = 'create table if not exists "__migrations__" (id bigint NOT NULL)';
 
 
 
@@ -19,7 +19,9 @@ module.exports = {
     appliedMigrations: function(conn, cb) {
         this.ensureMigrationTableExists(conn, function() {
             this.exec(conn, 'select * from __migrations__', function(result) {
-                cb(result.rows);
+                cb(result.rows.map(function(row) {
+                    return row.id;
+                }));
             });
         }.bind(this));
     },
