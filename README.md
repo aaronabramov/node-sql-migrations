@@ -23,16 +23,21 @@ require('sql_migrations').run({
 ### CLI
 run `node ./migrate.js` with arguments
 
-* ##### `node ./migrate create migration_name`
-    will create two migration files (up and down)
-    ```
-    ./migrations/1415860098827_up_migration_name.sql
-    ./migrations/1415860098827_down_migration_name.sql
-    ```
+---
 
+##### `node ./migrate create migration_name`
+will create two migration files (up and down)
+```
+./migrations/1415860098827_up_migration_name.sql
+./migrations/1415860098827_down_migration_name.sql
+```
 
-* ##### `node ./migrate migrate`
-    will run all pending migrations
+---
 
-* ##### `node ./migrate.js rollback`
-    will rollback the last migration if there is one
+##### `node ./migrate migrate`
+will run all pending migrations
+
+---
+
+##### `node ./migrate.js rollback`
+will rollback the last migration if there is one
