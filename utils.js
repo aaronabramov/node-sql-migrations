@@ -32,7 +32,7 @@ module.exports = {
         var pending = [];
         migrationsList.forEach(function(migration) {
             var id = migration.match(/^(\d+)/)[0];
-            if (!!~ids.indexOf(id) && migration.match(/^\d+\_up.*$/)) {
+            if (!~ids.indexOf(id) && migration.match(/^\d+\_up.*$/)) {
                 pending.push(migration);
             }
         });
