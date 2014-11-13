@@ -6,10 +6,11 @@ var pg = require('pg'),
 
 
 module.exports = {
-    exec: function(query, cb) {
+    exec: function(query, values, cb) {
+        cb || (cb = values);
         pg.connect(cfg.conn, function(err, client, done) {
             err && utils.panic(err);
-            client.query(query, function(err, result) {
+            client.query(query, values, function(err, result) {
                 //call `done()` to release the client back to the pool
                 done();
                 err && utils.panic(err);
@@ -32,8 +33,13 @@ module.exports = {
             console.log('Applying ' + migration);
             console.log(result)
             console.log('===============================================');
-            cb();
-        });
+            var values = [migration.match(/^(\d)+/)[0]];
+            this.exec(
+                'insert into __migrations__ (id) values ($1)',
+                values,
+                cb
+            );
+        }.bind(this));
     },
     rollbackMigration: function(id, cb) {},
     ensureMigrationTableExists: function(cb) {
