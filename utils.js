@@ -1,4 +1,5 @@
 var fs = require('fs'),
+    path = require('path'),
     cfg = require('./config.js');
 
 module.exports = {
@@ -36,5 +37,8 @@ module.exports = {
             }
         });
         return pending;
+    },
+    getSql: function(migration) {
+        return fs.readFileSync(path.join(cfg.migrationsDir, migration)).toString();
     }
 };

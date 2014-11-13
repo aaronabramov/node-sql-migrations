@@ -10,6 +10,19 @@ module.exports = function() {
         var migrationsList = utils.getMigrationsList(),
             pending = utils.getPending(migrationsList, ids);
         console.log(pending);
-        process.exit();
+
+        function apply() {
+            // base case
+            if (!pending.length) {
+                console.log('done');
+                return process.exit();
+            }
+            adapter.applyMigration(pending.shift(), function() {
+                // recur
+                apply();
+            });
+        }
+
+        apply();
     });
 };

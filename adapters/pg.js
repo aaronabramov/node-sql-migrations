@@ -26,11 +26,12 @@ module.exports = {
             });
         }.bind(this));
     },
-    applyMigration: function(cb) {},
-    rollbackMigration: function(id) {},
+    applyMigration: function(migration, cb) {
+        console.log(utils.getSql(migration));
+        cb();
+    },
+    rollbackMigration: function(id, cb) {},
     ensureMigrationTableExists: function(cb) {
-        this.exec(ENSURE_SQL, function(result) {
-            cb(result);
-        });
+        this.exec(ENSURE_SQL, cb)
     }
 };
