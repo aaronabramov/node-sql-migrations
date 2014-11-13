@@ -1,24 +1,33 @@
-var pg = require('pg');
+var pg = require('pg'),
+    utils = require('../utils.js'),
+    ENSURE_SQL = 'create table if not exists "__migrations__" (id integer NOT NULL)';
+
+
 
 module.exports = {
-    exec: function(con, query, cb) {
-        pg.connect(con, function(err, client, done) {
-            if (err) {
-                return console.error('error fetching client from pool', err);
-            }
+    exec: function(conn, query, cb) {
+        pg.connect(conn, function(err, client, done) {
+            err && utils.panic(err);
             client.query(query, function(err, result) {
                 //call `done()` to release the client back to the pool
                 done();
-
-                if (err) {
-                    return console.error('error running query', err);
-                }
-                console.log(result.rows[0]);
-                //output: 1
+                err && utils.panic(err);
+                cb(result);
             });
         });
     },
-    appliedMigrations: function() {},
+    appliedMigrations: function(conn, cb) {
+        this.ensureMigrationTableExists(conn, function() {
+            this.exec(conn, 'select * from __migrations__', function(result) {
+                cb(result.rows);
+            });
+        }.bind(this));
+    },
     addMigration: function() {},
-    removeMigration: function() {}
+    removeMigration: function() {},
+    ensureMigrationTableExists: function(conn, cb) {
+        this.exec(conn, ENSURE_SQL, function(result) {
+            cb(result);
+        });
+    }
 };

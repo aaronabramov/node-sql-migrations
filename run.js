@@ -4,7 +4,10 @@ module.exports = function(cfg) {
 
     switch (args[0]) {
         case 'create':
-            require('./create_migration.js')(cfg, args[1]);
+            require('./cmds/create_migration.js')(cfg, args[1]);
+            break;
+        case 'migrate':
+            require('./cmds/migrate.js')(cfg);
             break;
         default:
             console.log('exit');
