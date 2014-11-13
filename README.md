@@ -25,7 +25,7 @@ run `node ./migrate.js` with arguments
 
 ---
 
-##### `node ./migrate create migration_name`
+#### `node ./migrate create migration_name`
 will create two migration files (up and down)
 ```
 ./migrations/1415860098827_up_migration_name.sql
@@ -34,10 +34,24 @@ will create two migration files (up and down)
 
 ---
 
-##### `node ./migrate migrate`
+#### `node ./migrate migrate`
 will run all pending migrations
 
 ---
 
-##### `node ./migrate.js rollback`
+#### `node ./migrate.js rollback`
 will rollback the last migration if there is one
+
+
+### Migration files
+write raw sql in your migrations
+example
+```sql
+-- ./migrations/1415860098827_up_migration_name.sql
+create table "test_table" (id bigint, name varchar(255));
+
+```
+```sql
+./migrations/1415860098827_down_migration_name.sql
+drop table "test_table";
+```
