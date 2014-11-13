@@ -52,6 +52,6 @@ create table "test_table" (id bigint, name varchar(255));
 
 ```
 ```sql
-./migrations/1415860098827_down_migration_name.sql
+-- ./migrations/1415860098827_down_migration_name.sql
 drop table "test_table";
 ```
