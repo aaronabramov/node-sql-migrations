@@ -27,8 +27,13 @@ module.exports = {
         }.bind(this));
     },
     applyMigration: function(migration, cb) {
-        console.log(utils.getSql(migration));
-        cb();
+        var sql = utils.getSql(migration);
+        this.exec(sql, function(result) {
+            console.log('Applying ' + migration);
+            console.log(result)
+            console.log('===============================================');
+            cb();
+        });
     },
     rollbackMigration: function(id, cb) {},
     ensureMigrationTableExists: function(cb) {
