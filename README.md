@@ -10,7 +10,7 @@ In your project
 // migrate.js
 var path = require('path');
 
-require('sql_migrations').run({
+require('sql-migrations').run({
     basedir: __dirname,
     migrationsDir: path.resolve(__dirname, 'migrations'),
     user: 'dabramov',
