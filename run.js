@@ -3,7 +3,6 @@ var args = process.argv.slice(2),
     config = require('./config.js');
 
 module.exports = function(cfg) {
-
     // save configuration keys to mutable shared config 1 by 1
     for (var k in cfg) {
         config[k] = cfg[k];

@@ -1,6 +1,7 @@
-var cfg = require('../config.js'),
-    adapter = require('../adapters/pg.js'),
-    utils = require('../utils.js');
+var cfg = require('../config.js');
+var adapter = require('../adapters/pg.js');
+var utils = require('../utils.js');
+var chalk = require('chalk');
 
 module.exports = function() {
 
@@ -12,7 +13,7 @@ module.exports = function() {
         if (pending.length) {
             console.log('Pending migrations:');
             pending.forEach(function(m) {
-                console.log('\033[32m>>\033[0m', m);
+                console.log(chalk.green('>>'), m);
             });
         } else {
             console.log('No pending migrations');

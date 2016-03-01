@@ -1,6 +1,6 @@
-var fs = require('fs'),
-    path = require('path'),
-    cfg = require('./config.js');
+var fs = require('fs');
+var path = require('path');
+var cfg = require('./config.js');
 
 module.exports = {
     makeConnString: function() {
@@ -9,11 +9,18 @@ module.exports = {
             host = cfg.host,
             db = cfg.db;
         // TODO: database dependent
-        var result = 'postgress://' + user;
+        var result = 'postgress://';
+
+        if (user) {
+          result += user;
+        }
+
         if (password) {
             result += ':' + password;
         }
+
         result += '@' + host + '/' + db;
+        
         return result;
     },
     panic: function(err) {
