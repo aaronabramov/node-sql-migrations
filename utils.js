@@ -7,20 +7,27 @@ module.exports = {
         var user = cfg.user,
             password = cfg.password,
             host = cfg.host,
-            db = cfg.db;
+            db = cfg.db,
+            port = cfg.port;
         // TODO: database dependent
         var result = 'postgress://';
 
         if (user) {
-          result += user;
+            result += user;
         }
 
         if (password) {
             result += ':' + password;
         }
 
-        result += '@' + host + '/' + db;
-        
+        result += '@' + host;
+
+        if (port) {
+            result += ':' + port;
+        }
+
+        result += '/' + db;
+
         return result;
     },
     panic: function(err) {

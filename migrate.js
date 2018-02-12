@@ -5,5 +5,7 @@ require('./').run({
     migrationsDir: path.resolve(__dirname, 'migrations'),
     user: 'dabramov',
     host: 'localhost',
-    db: 'sql_migrations'
+    db: 'sql_migrations',
+    password: 'pgpassword',
+    port: 5432
 });

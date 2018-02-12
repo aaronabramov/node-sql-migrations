@@ -16,7 +16,8 @@ require('sql-migrations').run({
     user: 'dabramov',
     host: 'localhost',
     password: 'password',
-    db: 'sql_migrations'
+    db: 'sql_migrations',
+    port: 5432
 });
 ```
 
