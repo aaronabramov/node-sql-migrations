@@ -1,6 +1,6 @@
 {
   "name": "sql-migrations",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "raw SQL migrations library for Node.js",
   "main": "index.js",
   "scripts": {
