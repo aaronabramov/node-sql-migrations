@@ -8,11 +8,12 @@ var pg = require('pg'),
 module.exports = {
     exec: function(query, values, cb) {
         cb || (cb = values);
-        pg.connect(cfg.conn, function(err, client, done) {
+        var client = new pg.Client(cfg.conn);
+        client.connect(function(err) {
             err && utils.panic(err);
             client.query(query, values, function(err, result) {
-                //call `done()` to release the client back to the pool
-                done();
+                //call `end()` to release the client back to the pool
+                client.end()
                 //add the sql line number to the error output if available
                 if (err && err.position) {
                   err.sql_line = (query.substring(0, err.position).match(/\n/g) || []).length + 1;
