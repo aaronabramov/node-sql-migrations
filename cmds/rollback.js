@@ -1,29 +1,25 @@
-var cfg = require('../config.js'),
-    adapter = require('../adapters/pg.js'),
-    utils = require('../utils.js');
+module.exports = function (migrationProvider, adapter) {
+    return adapter.appliedMigrations().then(function (ids) {
+        var lastAppliedMigrationId = ids[ids.length - 1];
 
-module.exports = function() {
-    adapter.appliedMigrations(function(ids) {
-        var id = ids[ids.length - 1],
-            migration;
-        console.log(id, ids);
-        if (id) {
-            utils.getMigrationsList().forEach(function(m) {
-                var match = m.match(/^(\d+)_down/);
-                if (match && match[1] == id) {
-                    migration = m;
-                }
-            });
-            if (!migration) {
-                utils.panic(new Error('can\'t find migration with id ', id));
-            }
-            adapter.rollbackMigration(migration, function() {
-                console.log('done');
-                process.exit();
-            });
-        } else {
+        if (!lastAppliedMigrationId) {
             console.log('Nothing to rollback');
-            process.exit();
+            return;
         }
+
+        var migration = migrationProvider.getMigrationsList().find(function (migration) {
+            var baseName = migration.match(/^(\d+)_down/);
+            if (baseName && baseName[1] == lastAppliedMigrationId) {
+                return true
+            }
+            return false;
+        });
+
+        if (!migration) {
+            throw new Error('Can\'t find migration with id ', lastAppliedMigrationId);
+        }
+
+        var sql = migrationProvider.getSql(migration);
+        return adapter.rollbackMigration(migration, sql);
     });
 };
