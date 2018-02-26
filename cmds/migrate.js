@@ -5,8 +5,6 @@ var chalk = require('chalk');
 
 module.exports = function() {
 
-    cfg.conn = utils.makeConnString();
-
     adapter.appliedMigrations(function(ids) {
         var migrationsList = utils.getMigrationsList(),
             pending = utils.getPending(migrationsList, ids);

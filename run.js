@@ -7,7 +7,6 @@ module.exports = function(cfg) {
     for (var k in cfg) {
         config[k] = cfg[k];
     }
-    config.conn = utils.makeConnString();
 
     switch (args[0]) {
         case 'create':

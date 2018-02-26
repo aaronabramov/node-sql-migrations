@@ -3,33 +3,6 @@ var path = require('path');
 var cfg = require('./config.js');
 
 module.exports = {
-    makeConnString: function() {
-        var user = cfg.user,
-            password = cfg.password,
-            host = cfg.host,
-            db = cfg.db,
-            port = cfg.port;
-        // TODO: database dependent
-        var result = 'postgress://';
-
-        if (user) {
-            result += user;
-        }
-
-        if (password) {
-            result += ':' + password;
-        }
-
-        result += '@' + host;
-
-        if (port) {
-            result += ':' + port;
-        }
-
-        result += '/' + db;
-
-        return result;
-    },
     panic: function(err) {
         console.error('ERROR:', err);
         process.exit(1);

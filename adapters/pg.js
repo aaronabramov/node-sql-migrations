@@ -8,7 +8,13 @@ var pg = require('pg'),
 module.exports = {
     exec: function(query, values, cb) {
         cb || (cb = values);
-        var client = new pg.Client(cfg.conn);
+        var client = new pg.Client({
+          host: cfg.host,
+          port: cfg.port,
+          database: cfg.db,
+          user: cfg.user,
+          password: cfg.password
+        });
         client.connect(function(err) {
             err && utils.panic(err);
             client.query(query, values, function(err, result) {
