@@ -43,6 +43,36 @@ will run all pending migrations
 #### `node ./migrate.js rollback`
 will rollback the last migration if there is one
 
+### Programmatic API
+#### Migrate
+In your project
+```js
+require('sql-migrations').migrate({
+    basedir: __dirname,
+    migrationsDir: path.resolve(__dirname, 'migrations'),
+    user: 'dabramov',
+    host: 'localhost',
+    password: 'password',
+    db: 'sql_migrations',
+    port: 5432
+});
+```
+This returns a promise which resolves/rejects whenever the migration is complete.
+
+#### Rollback
+In your project
+```js
+require('sql-migrations').rollback({
+    basedir: __dirname,
+    migrationsDir: path.resolve(__dirname, 'migrations'),
+    user: 'dabramov',
+    host: 'localhost',
+    password: 'password',
+    db: 'sql_migrations',
+    port: 5432
+});
+```
+This returns a promise which resolves/rejects whenever the rollback is complete.
 
 ### Migration files
 write raw sql in your migrations
