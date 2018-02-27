@@ -1,37 +1,42 @@
-var cfg = require('../config.js');
-var adapter = require('../adapters/pg.js');
-var utils = require('../utils.js');
 var chalk = require('chalk');
 
-module.exports = function() {
+module.exports = function (migrationProvider, adapter) {
+    return adapter.appliedMigrations()
+        .then(function (appliedMigrationIds) {
+            var migrationsList = migrationProvider.getMigrationsList();
+            var pending = getPending(migrationsList, appliedMigrationIds);
 
-    cfg.conn = utils.makeConnString();
+            if (pending.length === 0) {
+                console.log('No pending migrations');
+                return;
+            }
 
-    adapter.appliedMigrations(function(ids) {
-        var migrationsList = utils.getMigrationsList(),
-            pending = utils.getPending(migrationsList, ids);
-        if (pending.length) {
             console.log('Pending migrations:');
-            pending.forEach(function(m) {
+            pending.forEach(function (m) {
                 console.log(chalk.green('>>'), m);
             });
-        } else {
-            console.log('No pending migrations');
-            process.exit();
-        }
 
-        function apply() {
-            // base case
-            if (!pending.length) {
-                console.log('done');
-                return process.exit();
+            var migration;
+            var migrationProgress = Promise.resolve();
+            while (migration = pending.shift()) {
+                (function (migration) {
+                    migrationProgress = migrationProgress.then(function () {
+                        var sql = migrationProvider.getSql(migration);
+                        return adapter.applyMigration(migration, sql);
+                    });
+                })(migration);
             }
-            adapter.applyMigration(pending.shift(), function() {
-                // recur
-                apply();
-            });
-        }
-
-        apply();
-    });
+            return migrationProgress;
+        });
 };
+
+function getPending(migrationsList, appliedMigrationIds) {
+    var pending = [];
+    migrationsList.forEach(function (migration) {
+        var id = migration.match(/^(\d+)/)[0];
+        if (!~appliedMigrationIds.indexOf(id) && migration.match(/^\d+\_up.*$/)) {
+            pending.push(migration);
+        }
+    });
+    return pending;
+}
