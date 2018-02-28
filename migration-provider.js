@@ -1,10 +1,10 @@
 var fs = require('fs');
 var path = require('path');
 
-module.exports = function (migrationsDir) {
+module.exports = function (config) {
     return {
         getMigrationsList: function () {
-            return fs.readdirSync(migrationsDir);
+            return fs.readdirSync(config.migrationsDir);
         },
         /**
          * @param {Array} migrationsList list of filenames
@@ -13,7 +13,15 @@ module.exports = function (migrationsDir) {
          */
 
         getSql: function (migration) {
-            return fs.readFileSync(path.join(migrationsDir, migration)).toString();
+            var sql = fs.readFileSync(path.join(config.migrationsDir, migration)).toString();
+            Object.keys(config.parameters || {}).forEach(function (key) {
+                sql = sql.replace(new RegExp(escapeRegExp(key), "g"), config.parameters[key]);
+            });
+            return sql;
         }
     };
 };
+
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}

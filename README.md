@@ -11,12 +11,7 @@ In your project
 var path = require('path');
 
 require('sql-migrations').run({
-    migrationsDir: path.resolve(__dirname, 'migrations'),
-    user: 'dabramov',
-    host: 'localhost',
-    password: 'password',
-    db: 'sql_migrations',
-    port: 5432
+    // configuration here. See the Configuration section
 });
 ```
 
@@ -47,12 +42,7 @@ will rollback the last migration if there is one
 In your project
 ```js
 require('sql-migrations').migrate({
-    migrationsDir: path.resolve(__dirname, 'migrations'),
-    user: 'dabramov',
-    host: 'localhost',
-    password: 'password',
-    db: 'sql_migrations',
-    port: 5432
+    // configuration here. See the Configuration section
 });
 ```
 This returns a promise which resolves/rejects whenever the migration is complete.
@@ -61,18 +51,37 @@ This returns a promise which resolves/rejects whenever the migration is complete
 In your project
 ```js
 require('sql-migrations').rollback({
-    migrationsDir: path.resolve(__dirname, 'migrations'),
-    user: 'dabramov',
-    host: 'localhost',
-    password: 'password',
-    db: 'sql_migrations',
-    port: 5432
+    // configuration here. See the Configuration section
 });
 ```
 This returns a promise which resolves/rejects whenever the rollback is complete.
 
+### Configuration
+Configuration should be specified as below:
+```js
+var configuration = {
+    migrationsDir: path.resolve(__dirname, 'migrations'), // This is the directory that should contain your SQL migrations.
+    host: 'localhost', // Database host
+    port: 5432, // Database port
+    db: 'sql_migrations', // Database name
+    user: 'dabramov', // Database username
+    password: 'password', // Database password
+    // Parameters are optional. If you provide them then any occurrences of the parameter (i.e. FOO) in the SQL scripts will be replaced by the value (i.e. bar).
+    parameters: {
+        "FOO": "bar"
+    }
+};
+```
+
+You can also swap out the default logger (the `console` object) for another one that supports the log and error methods. You should do this before running any other commands:
+```js
+require('sql-migrations').setLogger({
+    log: function() {},
+    error: function() {}
+});
+```
 ### Migration files
-write raw sql in your migrations
+Write raw sql in your migrations. You can also include placeholders which will be substituted.
 example
 ```sql
 -- ./migrations/1415860098827_up_migration_name.sql
