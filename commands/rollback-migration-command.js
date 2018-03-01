@@ -1,9 +1,9 @@
-module.exports = function (migrationProvider, adapter) {
+module.exports = function (migrationProvider, adapter, logger) {
     return adapter.appliedMigrations().then(function (ids) {
         var lastAppliedMigrationId = ids[ids.length - 1];
 
         if (!lastAppliedMigrationId) {
-            console.log('Nothing to rollback');
+            logger.log('Nothing to rollback');
             return;
         }
 

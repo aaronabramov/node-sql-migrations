@@ -1,12 +1,15 @@
 var MigrationProvider = require('./migration-provider');
 var PgAdapter = require('./adapters/pg');
-var migrateCommand = require('./cmds/migrate')
-var rollbackCommand = require('./cmds/rollback');
+var createMigrationCommand = require('./commands/create-migration-command');
+var runMigrationsCommand = require('./commands/run-migrations-command')
+var rollbackMigrationCommand = require('./commands/rollback-migration-command');
+
+var LOGGER = console;
 
 function migrate(config) {
-    var migrationProvider = MigrationProvider(config.migrationsDir);
-    var adapter = PgAdapter(config);
-    return migrateCommand(migrationProvider, adapter).then(function () {
+    var migrationProvider = MigrationProvider(config);
+    var adapter = PgAdapter(config, LOGGER);
+    return runMigrationsCommand(migrationProvider, adapter, LOGGER).then(function () {
         return adapter.dispose();
     }, function (error) {
         function rethrowOriginalError() {
@@ -17,9 +20,9 @@ function migrate(config) {
 }
 
 function rollback(config) {
-    var migrationProvider = MigrationProvider(config.migrationsDir);
-    var adapter = PgAdapter(config);
-    return rollbackCommand(migrationProvider, adapter).then(function () {
+    var migrationProvider = MigrationProvider(config);
+    var adapter = PgAdapter(config, LOGGER);
+    return rollbackMigrationCommand(migrationProvider, adapter, LOGGER).then(function () {
         return adapter.dispose();
     }, function (error) {
         function rethrowOriginalError() {
@@ -30,6 +33,9 @@ function rollback(config) {
 }
 
 module.exports = {
+    setLogger: function (logger) {
+        LOGGER = logger;
+    },
     migrate: migrate,
     rollback: rollback,
     run: function (config) {
@@ -37,7 +43,7 @@ module.exports = {
 
         switch (args[0]) {
             case 'create':
-                require('./cmds/create_migration.js')(args[1]);
+                createMigrationCommand(config, LOGGER, args[1]);
                 break;
             case 'migrate':
                 migrate(config).then(onCliSuccess, onCliError);
@@ -46,16 +52,16 @@ module.exports = {
                 rollback(config).then(onCliSuccess, onCliError);
                 break;
             default:
-                console.log('exit');
+                LOGGER.log('exit');
         }
 
         function onCliSuccess() {
-            console.log('done');
+            LOGGER.log('done');
             process.exit();
         }
 
         function onCliError(error) {
-            console.error('ERROR:', error);
+            LOGGER.error('ERROR:', error);
             process.exit(1);
         }
     }

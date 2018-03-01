@@ -1,6 +1,6 @@
 var pg = require('pg');
 
-module.exports = function (config) {
+module.exports = function (config, logger) {
     var pool = new pg.Pool({
         host: config.host,
         port: config.port,
@@ -33,18 +33,18 @@ module.exports = function (config) {
         },
         applyMigration: function applyMigration(migration, sql) {
             return exec(sql).then(function (result) {
-                console.log('Applying ' + migration);
-                console.log(result)
-                console.log('===============================================');
+                logger.log('Applying ' + migration);
+                logger.log(result)
+                logger.log('===============================================');
                 var values = [migration.match(/^(\d)+/)[0]];
                 return exec('insert into __migrations__ (id) values ($1)', values);
             });
         },
         rollbackMigration: function rollbackMigration(migration, sql) {
             return exec(sql).then(function (result) {
-                console.log('Reverting ' + migration);
-                console.log(result)
-                console.log('===============================================');
+                logger.log('Reverting ' + migration);
+                logger.log(result)
+                logger.log('===============================================');
                 var values = [migration.match(/^(\d)+/)[0]];
                 return exec('delete from __migrations__ where id = $1', values);
             });

@@ -1,19 +1,19 @@
 var chalk = require('chalk');
 
-module.exports = function (migrationProvider, adapter) {
+module.exports = function (migrationProvider, adapter, logger) {
     return adapter.appliedMigrations()
         .then(function (appliedMigrationIds) {
             var migrationsList = migrationProvider.getMigrationsList();
             var pending = getPending(migrationsList, appliedMigrationIds);
 
             if (pending.length === 0) {
-                console.log('No pending migrations');
+                logger.log('No pending migrations');
                 return;
             }
 
-            console.log('Pending migrations:');
+            logger.log('Pending migrations:');
             pending.forEach(function (m) {
-                console.log(chalk.green('>>'), m);
+                logger.log(chalk.green('>>'), m);
             });
 
             var migration;
