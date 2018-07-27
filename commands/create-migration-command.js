@@ -6,6 +6,10 @@ module.exports = function (config, logger, migrationName) {
     var up, down,
         ts = Date.now();
 
+    if (typeof config.migrationsDir !== 'string') {
+        throw new Error('configuration "migrationsDir" is missing');
+    }
+
     mkdirp.sync(config.migrationsDir);
 
     up = ts + '_up_' + migrationName + '.sql';
