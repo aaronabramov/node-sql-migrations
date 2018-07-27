@@ -1,10 +1,10 @@
 var chalk = require('chalk');
 
-module.exports = function (migrationProvider, adapter, logger) {
+module.exports = function (migrationProvider, adapter, minMigrationTime, logger) {
     return adapter.appliedMigrations()
         .then(function (appliedMigrationIds) {
             var migrationsList = migrationProvider.getMigrationsList();
-            var pending = getPending(migrationsList, appliedMigrationIds);
+            var pending = getPending(migrationsList, appliedMigrationIds, minMigrationTime);
 
             if (pending.length === 0) {
                 logger.log('No pending migrations');
@@ -30,11 +30,11 @@ module.exports = function (migrationProvider, adapter, logger) {
         });
 };
 
-function getPending(migrationsList, appliedMigrationIds) {
+function getPending(migrationsList, appliedMigrationIds, minMigrationTime) {
     var pending = [];
     migrationsList.forEach(function (migration) {
         var id = migration.match(/^(\d+)/)[0];
-        if (!~appliedMigrationIds.indexOf(id) && migration.match(/^\d+\_up.*$/)) {
+        if (id >= minMigrationTime && !~appliedMigrationIds.indexOf(id) && migration.match(/^\d+\_up.*$/)) {
             pending.push(migration);
         }
     });

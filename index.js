@@ -9,7 +9,7 @@ var LOGGER = console;
 function migrate(config) {
     var migrationProvider = MigrationProvider(config);
     var adapter = PgAdapter(config, LOGGER);
-    return runMigrationsCommand(migrationProvider, adapter, LOGGER).then(function () {
+    return runMigrationsCommand(migrationProvider, adapter, config.minMigrationTime, LOGGER).then(function () {
         return adapter.dispose();
     }, function (error) {
         function rethrowOriginalError() {
