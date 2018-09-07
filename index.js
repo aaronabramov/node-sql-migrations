@@ -1,14 +1,12 @@
 var MigrationProvider = require('./migration-provider');
-var PgAdapter = require('./adapters/pg');
 var createMigrationCommand = require('./commands/create-migration-command');
-var runMigrationsCommand = require('./commands/run-migrations-command')
+var runMigrationsCommand = require('./commands/run-migrations-command');
 var rollbackMigrationCommand = require('./commands/rollback-migration-command');
 
 var LOGGER = console;
 
-function migrate(config) {
+function migrate(config, adapter) {
     var migrationProvider = MigrationProvider(config);
-    var adapter = PgAdapter(config, LOGGER);
     return runMigrationsCommand(migrationProvider, adapter, LOGGER).then(function () {
         return adapter.dispose();
     }, function (error) {
@@ -19,9 +17,8 @@ function migrate(config) {
     });
 }
 
-function rollback(config) {
+function rollback(config, adapter) {
     var migrationProvider = MigrationProvider(config);
-    var adapter = PgAdapter(config, LOGGER);
     return rollbackMigrationCommand(migrationProvider, adapter, LOGGER).then(function () {
         return adapter.dispose();
     }, function (error) {
@@ -39,6 +36,11 @@ module.exports = {
     migrate: migrate,
     rollback: rollback,
     run: function (config) {
+        config.adapter = config.adapter || 'pg';
+
+        var Adapter = require('./adapters/' + config.adapter);
+        var adapter = Adapter(config, LOGGER);
+
         var args = process.argv.slice(2);
 
         switch (args[0]) {
@@ -46,10 +48,10 @@ module.exports = {
                 createMigrationCommand(config, LOGGER, args[1]);
                 break;
             case 'migrate':
-                migrate(config).then(onCliSuccess, onCliError);
+                migrate(config, adapter).then(onCliSuccess, onCliError);
                 break;
             case 'rollback':
-                rollback(config).then(onCliSuccess, onCliError);
+                rollback(config, adapter).then(onCliSuccess, onCliError);
                 break;
             default:
                 LOGGER.log('exit');

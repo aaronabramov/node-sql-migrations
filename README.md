@@ -66,6 +66,7 @@ var configuration = {
     db: 'sql_migrations', // Database name
     user: 'dabramov', // Database username
     password: 'password', // Database password
+    adapter: 'pg', // Database adapter: pg, mysql
     // Parameters are optional. If you provide them then any occurrences of the parameter (i.e. FOO) in the SQL scripts will be replaced by the value (i.e. bar).
     parameters: {
         "FOO": "bar"
