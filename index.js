@@ -7,7 +7,7 @@ var LOGGER = console;
 
 function migrate(config, adapter) {
     var migrationProvider = MigrationProvider(config);
-    return runMigrationsCommand(migrationProvider, adapter, LOGGER).then(function () {
+    return runMigrationsCommand(migrationProvider, adapter, config.minMigrationTime, LOGGER).then(function () {
         return adapter.dispose();
     }, function (error) {
         function rethrowOriginalError() {
