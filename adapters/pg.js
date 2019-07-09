@@ -28,7 +28,7 @@ module.exports = function (config, logger) {
             return ensureMigrationTableExists().then(function () {
                 return exec('select * from __migrations__');
             }).then(function (result) {
-                return result.rows.map(function (row) { return row.id; });
+                return result.rows.map(function (row) { return String(row.id); });
             });
         },
         applyMigration: function applyMigration(migration, sql) {
