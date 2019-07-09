@@ -1,10 +1,3 @@
-var path = require('path');
+const config = require('./config_test').postgres
 
-require('./').run({
-    migrationsDir: path.resolve(process.cwd, 'migrations'),
-    user: 'dabramov',
-    host: 'localhost',
-    db: 'sql_migrations',
-    password: 'pgpassword',
-    port: 5432
-});
+require('./').run(config);

@@ -34,7 +34,7 @@ function getPending(migrationsList, appliedMigrationIds, minMigrationTime) {
     var pending = [];
     migrationsList.forEach(function (migration) {
         var id = migration.match(/^(\d+)/)[0];
-        if ((!minMigrationTime || id >= minMigrationTime) && !~appliedMigrationIds.indexOf(id) && migration.match(/^\d+\_up.*$/)) {
+        if ((!minMigrationTime || id >= minMigrationTime) && !appliedMigrationIds.includes(id) && migration.match(/^\d+\_up.*$/)) {
             pending.push(migration);
         }
     });
