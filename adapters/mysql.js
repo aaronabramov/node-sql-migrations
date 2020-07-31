@@ -7,7 +7,8 @@ module.exports = function (config, logger) {
         database: config.db,
         user: config.user,
         password: config.password,
-        connectionLimit: 10
+        connectionLimit: 10,
+        multipleStatements: true
     });
 
     function exec(query, values) {
