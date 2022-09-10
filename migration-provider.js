@@ -4,7 +4,8 @@ var path = require('path');
 module.exports = function (config) {
     return {
         getMigrationsList: function () {
-            return fs.readdirSync(config.migrationsDir);
+            return fs.readdirSync(config.migrationsDir)
+                .filter(filename => filename.endsWith('.sql'));
         },
         /**
          * @param {Array} migrationsList list of filenames

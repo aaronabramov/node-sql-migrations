@@ -33,7 +33,12 @@ module.exports = function (migrationProvider, adapter, minMigrationTime, logger)
 function getPending(migrationsList, appliedMigrationIds, minMigrationTime) {
     var pending = [];
     migrationsList.forEach(function (migration) {
-        var id = migration.match(/^(\d+)/)[0];
+        var idMatch = migration.match(/^(\d+)/);
+        if (!idMatch) {
+          console.log(`Ignoring file ${migration}, it does not match the naming pattern.`);
+          return;
+        }
+        var id = idMatch[0];
         if ((!minMigrationTime || id >= minMigrationTime) && !~appliedMigrationIds.indexOf(id) && migration.match(/^\d+\_up.*$/)) {
             pending.push(migration);
         }
